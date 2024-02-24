@@ -6,11 +6,18 @@ package frc.robot;
 
 import org.littletonrobotics.junction.Logger;
 
+import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.util.PathPlannerLogging;
 import com.revrobotics.REVPhysicsSim;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -21,7 +28,22 @@ import frc.robot.commands.autonomous.SimpleAuto;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+
+
 public class RobotContainer {
+  
+  Pose2d allianceWingTargetPose = new Pose2d(5.62, 6.72, Rotation2d.fromDegrees(0.0));
+  Pose2d subwooferPose = new Pose2d(1.27, 5.57, Rotation2d.fromDegrees(0.0));
+
+  // Load the paths we want to follow
+  PathPlannerPath allianceWingToSubwoofer = PathPlannerPath.fromPathFile("WingToSubwoofer");
+
+  // Create the constraints to use while pathfinding. The constraints defined in the path will only be used for the path.
+  PathConstraints constraintsA = new PathConstraints(
+  3.0, 2.0,
+  2*Math.PI, 2*Math.PI);
+
   private static final DriveSubsystem DRIVE_SUBSYSTEM = new DriveSubsystem(
     DriveSubsystem.initializeHardware(),
     Constants.Drive.DRIVE_ROTATE_PID,
@@ -40,7 +62,32 @@ public class RobotContainer {
 
   private static SendableChooser<Command> m_automodeChooser = new SendableChooser<>();
 
+  private final Field2d field;
+
   public RobotContainer() {
+
+    field = new Field2d();
+                SmartDashboard.putData("Field", field);
+
+                // Logging callback for current robot pose
+                PathPlannerLogging.setLogCurrentPoseCallback((pose) -> {
+                        // Do whatever you want with the pose here
+                        field.setRobotPose(pose);
+                });
+
+                // Logging callback for target robot pose
+                PathPlannerLogging.setLogTargetPoseCallback((pose) -> {
+                        // Do whatever you want with the pose here
+                        field.getObject("target pose").setPose(pose);
+                });
+
+                // Logging callback for the active path, this is sent as a list of poses
+                PathPlannerLogging.setLogActivePathCallback((poses) -> {
+                        // Do whatever you want with the poses here
+                        field.getObject("path").setPoses(poses);
+                });
+
+      
     // Set drive command
     DRIVE_SUBSYSTEM.setDefaultCommand(
         DRIVE_SUBSYSTEM.driveCommand(
@@ -79,17 +126,23 @@ public class RobotContainer {
     // Right bumper button - go to amp
     PRIMARY_CONTROLLER.rightBumper().whileTrue(DRIVE_SUBSYSTEM.goToPoseCommand(Constants.Field.AMP));
 
-    // A button - go to source
-    PRIMARY_CONTROLLER.a().whileTrue(DRIVE_SUBSYSTEM.goToPoseCommand(Constants.Field.SOURCE));
+    // // A button - go to source
+    // PRIMARY_CONTROLLER.a().whileTrue(DRIVE_SUBSYSTEM.goToPoseCommand(Constants.Field.SOURCE));
 
     // B button - aim at game object
-    PRIMARY_CONTROLLER.b().whileTrue(
-      DRIVE_SUBSYSTEM.aimAtPointCommand(
-        () -> PRIMARY_CONTROLLER.getLeftY(),
-        () -> PRIMARY_CONTROLLER.getLeftX(),
-        () -> VISION_SUBSYSTEM.getObjectTranslation(),
-        false
+    PRIMARY_CONTROLLER.a().whileTrue(
+      AutoBuilder.pathfindToPose(
+              subwooferPose,
+              constraintsA,
+              0.0, // Goal end velocity in meters/sec
+              0.0 // Rotation delay distance in meters. This is how far the robot should travel before attempting to rotate.
       )
+    );
+
+    PRIMARY_CONTROLLER.b().whileTrue(
+      AutoBuilder.pathfindThenFollowPath(
+        allianceWingToSubwoofer, constraintsA, 1.4 // Rotation delay distance in meters. This is how far the robot should travel before attempting to rotate.
+        )
     );
   }
 
@@ -100,6 +153,7 @@ public class RobotContainer {
     m_automodeChooser.setDefaultOption("Do nothing", new SequentialCommandGroup());
     m_automodeChooser.addOption("Simple", new SimpleAuto(DRIVE_SUBSYSTEM));
     m_automodeChooser.addOption("Leave", new LeaveAuto(DRIVE_SUBSYSTEM));
+    m_automodeChooser.addOption("4 Note Auto 1", new PathPlannerAuto("4 Note Auto 1"));
   }
 
   /**

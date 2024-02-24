@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.9959808841615208,
-      "y": 7.00722290166912
+      "x": 1.6887664017838722,
+      "y": 5.550936522700434
     },
     "rotation": 0
   },
@@ -14,7 +14,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Leave-Blue"
+            "pathName": "4 note short"
           }
         }
       ]

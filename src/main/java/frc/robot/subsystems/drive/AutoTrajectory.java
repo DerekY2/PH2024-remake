@@ -32,7 +32,7 @@ public class AutoTrajectory {
   public AutoTrajectory(DriveSubsystem driveSubsystem, String autoName) {
     this.m_driveSubsystem = driveSubsystem;
 
-    String selectedAutoName = autoName + "-Blue";
+    String selectedAutoName = autoName + "-Blue"; 
     Optional<Alliance> ally = DriverStation.getAlliance();
     if (ally.isPresent()) {
       if (ally.get() == Alliance.Red) selectedAutoName = autoName + "-Red";
