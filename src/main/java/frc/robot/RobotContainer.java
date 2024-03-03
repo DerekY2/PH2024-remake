@@ -38,6 +38,8 @@ public class RobotContainer {
 
   // Load the paths we want to follow
   PathPlannerPath allianceWingToSubwoofer = PathPlannerPath.fromPathFile("WingToSubwoofer");
+  PathPlannerPath SourceToSubwoofer = PathPlannerPath.fromPathFile("SourceToSubwoofer");
+  PathPlannerPath toAllianceSource = PathPlannerPath.fromPathFile("ToSource");
 
   // Create the constraints to use while pathfinding. The constraints defined in the path will only be used for the path.
   PathConstraints constraintsA = new PathConstraints(
@@ -87,7 +89,6 @@ public class RobotContainer {
                         field.getObject("path").setPoses(poses);
                 });
 
-      
     // Set drive command
     DRIVE_SUBSYSTEM.setDefaultCommand(
         DRIVE_SUBSYSTEM.driveCommand(
@@ -111,17 +112,17 @@ public class RobotContainer {
     // Start button - toggle traction control
     PRIMARY_CONTROLLER.start().onTrue(DRIVE_SUBSYSTEM.toggleTractionControlCommand());
 
-    // Y button - aim at speaker
-    PRIMARY_CONTROLLER.y().whileTrue(
-      DRIVE_SUBSYSTEM.aimAtPointCommand(
-        () -> PRIMARY_CONTROLLER.getLeftY(),
-        () -> PRIMARY_CONTROLLER.getLeftX(),
-        () -> DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Blue
-            ? Constants.Field.BLUE_SPEAKER
-            : Constants.Field.RED_SPEAKER,
-        true
-      )
-    );
+    // // Y button - aim at speaker
+    // PRIMARY_CONTROLLER.y().whileTrue(
+    //   DRIVE_SUBSYSTEM.aimAtPointCommand(
+    //     () -> PRIMARY_CONTROLLER.getLeftY(),
+    //     () -> PRIMARY_CONTROLLER.getLeftX(),
+    //     () -> DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Blue
+    //         ? Constants.Field.BLUE_SPEAKER
+    //         : Constants.Field.RED_SPEAKER,
+    //     true
+    //   )
+    // );
 
     // Right bumper button - go to amp
     PRIMARY_CONTROLLER.rightBumper().whileTrue(DRIVE_SUBSYSTEM.goToPoseCommand(Constants.Field.AMP));
@@ -130,19 +131,35 @@ public class RobotContainer {
     // PRIMARY_CONTROLLER.a().whileTrue(DRIVE_SUBSYSTEM.goToPoseCommand(Constants.Field.SOURCE));
 
     // B button - aim at game object
-    PRIMARY_CONTROLLER.a().whileTrue(
-      AutoBuilder.pathfindToPose(
-              subwooferPose,
-              constraintsA,
-              0.0, // Goal end velocity in meters/sec
-              0.0 // Rotation delay distance in meters. This is how far the robot should travel before attempting to rotate.
-      )
-    );
+    // PRIMARY_CONTROLLER.a().whileTrue(
+    //   AutoBuilder.pathfindToPose(
+    //           subwooferPose,
+    //           constraintsA,
+    //           0.0, // Goal end velocity in meters/sec
+    //           0.0 // Rotation delay distance in meters. This is how far the robot should travel before attempting to rotate.
+    //   )
+    // );
 
     PRIMARY_CONTROLLER.b().whileTrue(
       AutoBuilder.pathfindThenFollowPath(
-        allianceWingToSubwoofer, constraintsA, 1.4 // Rotation delay distance in meters. This is how far the robot should travel before attempting to rotate.
+        allianceWingToSubwoofer, constraintsA, 3.4 // Rotation delay distance in meters. This is how far the robot should travel before attempting to rotate.
         )
+    );
+
+    PRIMARY_CONTROLLER.x().whileTrue(
+      AutoBuilder.pathfindThenFollowPath(
+        SourceToSubwoofer, constraintsA, 3.4 // Rotation delay distance in meters. This is how far the robot should travel before attempting to rotate.
+        )
+    );
+
+    PRIMARY_CONTROLLER.y().whileTrue(
+      AutoBuilder.pathfindThenFollowPath(
+        toAllianceSource, constraintsA, 3.4 // Rotation delay distance in meters. This is how far the robot should travel before attempting to rotate.
+        )
+    );
+
+    PRIMARY_CONTROLLER.a().whileTrue(
+      new 
     );
   }
 

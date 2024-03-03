@@ -254,19 +254,24 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
     m_field = new Field2d();
     SmartDashboard.putData(m_field);
 
-    // Setup path logging callback
-    PathPlannerLogging.setLogActivePathCallback((poses) -> {
-      if (poses.size() < 1) return;
-      var trajectory = TrajectoryGenerator.generateTrajectory(
-        poses,
-        new TrajectoryConfig(DRIVE_MAX_LINEAR_SPEED, DRIVE_AUTO_ACCELERATION)
-      );
+    // // Setup path logging callback
+    // PathPlannerLogging.setLogActivePathCallback((poses) -> {
+    //   if (poses.size() < 1) return;
+    //   var trajectory = TrajectoryGenerator.generateTrajectory(
+    //     poses,
+    //     new TrajectoryConfig(DRIVE_MAX_LINEAR_SPEED, DRIVE_AUTO_ACCELERATION)
+    //   );
 
-      m_field.getObject("currentPath").setTrajectory(trajectory);
-    });
+    //   m_field.getObject("currentPath").setTrajectory(trajectory);
+    // });
 
     // Set VisionSubsystem pose supplier for simulation
     VisionSubsystem.getInstance().setPoseSupplier(this::getPose);
+  }
+
+  public void resetGyro(){
+    m_navx.reset();
+    resetPose(getPose());
   }
 
   /**
@@ -677,6 +682,8 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
     );
   }
 
+  
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
@@ -781,6 +788,10 @@ public class DriveSubsystem extends SubsystemBase implements AutoCloseable {
         velocityCorrection
       )
     ).finallyDo(() -> resetRotatePID());
+  }
+
+  public Command zeroHeading(){
+    return run(()-> resetGyro());
   }
 
   /**
