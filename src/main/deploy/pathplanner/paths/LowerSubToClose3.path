@@ -3,32 +3,38 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.6,
-        "y": 6.98
+        "x": 0.77,
+        "y": 4.5
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.6,
-        "y": 6.98
+        "x": 1.144212502405032,
+        "y": 4.368142031576503
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.24,
-        "y": 5.55
+        "x": 2.561223724444594,
+        "y": 4.11
       },
       "prevControl": {
-        "x": 2.395984221654691,
-        "y": 5.55
+        "x": 1.1640553170561656,
+        "y": 4.11
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.7,
+      "rotationDegrees": 0,
+      "rotateFast": false
+    }
+  ],
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
@@ -39,13 +45,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.043637879503830274,
+    "rotation": 0.0,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": null,
+  "folder": "FromLowerSubwoofer",
   "previewStartingState": {
-    "rotation": 0,
+    "rotation": -60.0,
     "velocity": 0
   },
   "useDefaultConstraints": true

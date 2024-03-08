@@ -167,10 +167,18 @@ public class RobotContainer {
    * Add auto modes to chooser
    */
   private void autoModeChooser() {
-    m_automodeChooser.setDefaultOption("Do nothing", new SequentialCommandGroup());
-    m_automodeChooser.addOption("Simple", new SimpleAuto(DRIVE_SUBSYSTEM));
-    m_automodeChooser.addOption("Leave", new LeaveAuto(DRIVE_SUBSYSTEM));
-    m_automodeChooser.addOption("4 Note Auto 1", new PathPlannerAuto("4 Note Auto 1"));
+    m_automodeChooser.setDefaultOption("AmpSide: Score preloaded + do nothing", new PathPlannerAuto("UpperSubScorePreloadOnly"));
+                m_automodeChooser.addOption("AmpSide: Close1 + Center2,1", new PathPlannerAuto("UpperSubClose1Center21"));
+                m_automodeChooser.addOption("AmpSide: Close1,2 + Center1", new PathPlannerAuto("UpperSubClose12Center1"));
+                m_automodeChooser.addOption("Center: Score preloaded + do nothing", new PathPlannerAuto("MidSubScorePreloadOnly"));
+                m_automodeChooser.addOption("Center: Close2,3,1 with rotation", new PathPlannerAuto("MidSubClose231Rotation"));
+                m_automodeChooser.addOption("Center: Close2,3,1 no rotation", new PathPlannerAuto("MidSubClose231NoRotation"));
+                m_automodeChooser.addOption("Center: Close2,3 + Center 2", new PathPlannerAuto("MidSubClose23Center2"));
+                m_automodeChooser.addOption("Center: Close2,3 + Center 1", new PathPlannerAuto("MidSubClose23Center1"));
+                m_automodeChooser.addOption("SourceSide: Score preloaded + do nothing", new PathPlannerAuto("LowerSubScorePreloadOnly"));
+                m_automodeChooser.addOption("SourceSide: Close3 + Center4,5", new PathPlannerAuto("LowerSubClose3Center45"));
+                m_automodeChooser.addOption("SourceSide: Center5,4 + Close3", new PathPlannerAuto("LowerSubCenter54Close3"));
+                m_automodeChooser.addOption("Test-Center: Mid + Amp side 3 note auto", new PathPlannerAuto("MidShotNoteShot"));
   }
 
   /**
