@@ -178,6 +178,7 @@ public class RobotContainer {
                 m_automodeChooser.addOption("SourceSide: Score preloaded + do nothing", new PathPlannerAuto("LowerSubScorePreloadOnly"));
                 m_automodeChooser.addOption("SourceSide: Close3 + Center4,5", new PathPlannerAuto("LowerSubClose3Center45"));
                 m_automodeChooser.addOption("SourceSide: Center5,4 + Close3", new PathPlannerAuto("LowerSubCenter54Close3"));
+                m_automodeChooser.addOption("SourceSide: Grief Center5,4,3,2,1", new PathPlannerAuto("LowerSubTrollAuto1"));
                 m_automodeChooser.addOption("Test-Center: Mid + Amp side 3 note auto", new PathPlannerAuto("MidShotNoteShot"));
   }
 
