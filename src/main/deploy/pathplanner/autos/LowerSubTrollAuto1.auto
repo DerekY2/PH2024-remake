@@ -14,7 +14,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 0.6
+            "waitTime": 1.0
           }
         },
         {
@@ -26,6 +26,6 @@
       ]
     }
   },
-  "folder": "LowerSubAutos",
+  "folder": null,
   "choreoAuto": false
 }
